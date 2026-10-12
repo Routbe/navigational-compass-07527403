@@ -48,6 +48,7 @@
 - `APPLE_APP_BUNDLE_IDENTIFIER` — OAuth app credential.
 - `GITHUB_CLIENT_ID` — OAuth app credential.
 - `GITHUB_CLIENT_SECRET` — OAuth app credential.
+- `GITHUB_TOKEN` (alias `GITHUB_PUBLIC_TOKEN`) — optional server-side token so keyless GitHub profile cards avoid rate limits.
 - `GITLAB_CLIENT_ID` — OAuth app credential.
 - `GITLAB_CLIENT_SECRET` — OAuth app credential.
 - `INFOMANIAK_CLIENT_ID` — OAuth app credential.
