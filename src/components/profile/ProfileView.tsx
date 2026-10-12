@@ -1,6 +1,8 @@
 import { NowPlaying, useNowPlaying } from "@/components/profile/NowPlaying";
 import { SnapchatProfile } from "@/components/profile/SnapchatProfile";
 import { ProfileIntegrations } from "@/components/profile/ProfileIntegrations";
+import { ProfileGuestbook } from "@/components/profile/ProfileGuestbook";
+import { useWireframeMode, WireframeOverlay } from "@/components/profile/WireframeMode";
 import { cn } from "@/lib/utils";
 import {
   backgroundLayerStyle,
@@ -203,6 +205,7 @@ export function ProfileView({
   const wide = layout === "wide";
   const earlyBeliever = Boolean(profile.is_early_believer);
   const [showVerifyInfo, setShowVerifyInfo] = useState(false);
+  const [wireframe, setWireframe] = useWireframeMode();
   /** Taalpil: auto-detect via de sitetaal, bezoeker mag zelf wisselen. */
   const bioLocales = availableBioLocales(prefs);
   const [bioLocale, setBioLocale] = useState<BioLocale | null>(null);
@@ -289,7 +292,7 @@ export function ProfileView({
   return (
     <main
       ref={mainRef}
-      className={`relative isolate min-h-screen w-full overflow-hidden px-4 pb-12 ${banner ? "pt-0" : "pt-12"}`}
+      className={`relative isolate min-h-screen w-full overflow-hidden px-4 pb-12 ${banner ? "pt-0" : "pt-12"} ${wireframe ? "rout-wireframe" : ""}`}
       style={{
         ...surface,
         color: t.text,
@@ -412,6 +415,7 @@ export function ProfileView({
         {profile.username && <SnapchatProfile handle={profile.username} theme={t} />}
         {profile.username && <NowPlaying handle={profile.username} theme={t} />}
         {profile.username && <ProfileIntegrations handle={profile.username} theme={t} />}
+        {profile.username && <ProfileGuestbook handle={profile.username} theme={t} />}
 
         {earlyBeliever && (
           <EarlyBelieverBadge
@@ -731,6 +735,16 @@ export function ProfileView({
                 {prefs.footerTagline}
               </p>
             ))}
+          <button
+            type="button"
+            onClick={() => setWireframe((v) => !v)}
+            aria-pressed={wireframe}
+            title="Ontwerpmodus (of typ DEV)"
+            className="font-mono text-[10px] tracking-widest opacity-40 transition-opacity hover:opacity-90"
+            style={{ color: t.muted }}
+          >
+            {wireframe ? "</> inspect aan" : "</>"}
+          </button>
           {showWatermark && (
             <a
               href="/about?ref=watermark"
@@ -749,6 +763,7 @@ export function ProfileView({
           ))}
         </div>
       )}
+      {wireframe && <WireframeOverlay root={mainRef} />}
     </main>
   );
 }
