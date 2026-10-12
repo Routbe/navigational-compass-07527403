@@ -18,6 +18,8 @@ export type IntegrationStatus = {
   bio?: string;
   /** Small counters, e.g. repos / followers. */
   stats?: { label: string; value: number }[];
+  /** Latest YouTube uploads (keyless RSS feed). */
+  videos?: { title: string; url: string; date: string | null; thumb: string }[];
   /** Latest feed entries (RSS / blog). */
   posts?: { title: string; url: string; date: string | null }[];
   chess?: { blitz?: number | null; rapid?: number | null; online?: boolean | null; challengeUrl?: string; username?: string };
@@ -234,15 +236,24 @@ export async function fetchStatus(provider: string, handle: string): Promise<Int
         const res = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
         if (!res.ok) return null;
         const xml = await res.text();
-        const entry = xml.split("<entry>")[1] ?? "";
-        const title = entry.match(/<title>([^<]*)<\/title>/)?.[1];
-        const vid = entry.match(/<yt:videoId>([^<]+)<\/yt:videoId>/)?.[1];
-        const published = entry.match(/<published>([^<]+)<\/published>/)?.[1];
+        const entries = xml.split("<entry>").slice(1, 4);
+        const videos = entries
+          .map((entry) => {
+            const vid = entry.match(/<yt:videoId>([A-Za-z0-9_-]{6,20})<\/yt:videoId>/)?.[1];
+            const title = entry.match(/<title>([^<]*)<\/title>/)?.[1];
+            const published = entry.match(/<published>([^<]+)<\/published>/)?.[1];
+            if (!vid || !title) return null;
+            return { title: decodeXml(title).slice(0, 160), url: `https://www.youtube.com/watch?v=${vid}`, date: published ?? null, thumb: `https://i.ytimg.com/vi/${vid}/mqdefault.jpg` };
+          })
+          .filter((v): v is NonNullable<typeof v> => v !== null);
+        const channel = xml.match(/<title>([^<]*)<\/title>/)?.[1];
+        const first = videos[0];
         return {
-          title: title ? decodeXml(title) : "YouTube-kanaal",
-          subtitle: published ? `Nieuwste video · ${ago(published)}` : undefined,
-          url: vid ? `https://www.youtube.com/watch?v=${vid}` : `https://www.youtube.com/channel/${channelId}`,
-          image: vid ? `https://i.ytimg.com/vi/${vid}/mqdefault.jpg` : null,
+          title: channel ? decodeXml(channel) : "YouTube-kanaal",
+          subtitle: first?.date ? `Nieuwste video · ${ago(first.date)}` : undefined,
+          url: `https://www.youtube.com/channel/${channelId}`,
+          image: first?.thumb ?? null,
+          videos,
         };
       } catch {
         return null;
