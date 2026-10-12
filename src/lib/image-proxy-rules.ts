@@ -13,6 +13,10 @@ export const PROXY_HOSTS = [
   "sdk.bitmoji.com",
   "images.bitmoji.com",
   "images.chesscomfiles.com",
+  "files.mastodon.social",
+  "cdn.masto.host",
+  "media.mstdn.social",
+  "files.mastodon.online",
 ];
 
 export function isAllowedProxyUrl(raw: string): URL | null {

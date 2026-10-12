@@ -57,7 +57,7 @@ export const INTEGRATIONS: Integration[] = [
   soon("x", "X", "socials", "siX"),
   soon("discord", "Discord", "socials", "siDiscord"),
   soon("reddit", "Reddit", "socials", "siReddit"),
-  soon("mastodon", "Mastodon", "socials", "siMastodon"),
+  { id: "mastodon", label: "Mastodon", category: "socials", icon: "siMastodon", mode: "handle", placeholder: "@naam@mastodon.social" },
   soon("threads", "Threads", "socials", "siThreads"),
   soon("snapchat", "Snapchat", "socials", "siSnapchat"),
   soon("tumblr", "Tumblr", "socials", "siTumblr"),
@@ -88,7 +88,7 @@ export const INTEGRATIONS: Integration[] = [
   soon("goodreads", "Goodreads", "culture", "siGoodreads"),
   // Smart Home & Zelf-Gehost
   soon("homeassistant", "Home Assistant", "home", "siHomeassistant"),
-  soon("rss", "RSS / Blog", "home", "siRss"),
+  { id: "rss", label: "RSS / Blog", category: "home", icon: "siRss", mode: "handle", placeholder: "Feed-URL, naam.substack.com of medium.com/@naam" },
   soon("matrix", "Matrix / Element", "home", "siMatrix"),
   // Support & Betalingen
   { id: "lightning", label: "Bitcoin Lightning", category: "payments", icon: "siBitcoin", mode: "address", placeholder: "naam@wallet.com of lnurl…" },
