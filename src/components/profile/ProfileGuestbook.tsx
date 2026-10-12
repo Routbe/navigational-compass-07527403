@@ -79,7 +79,7 @@ export function ProfileGuestbook({ handle, theme }: { handle: string; theme: The
         </form>
       ) : (
         <p className="mt-2 text-xs" style={{ color: theme.muted }}>
-          <Link to="/sign-in" className="underline">Log in met je ROUT-account</Link> om een berichtje achter te laten.
+          <Link to="/auth" className="underline">Log in met je ROUT-account</Link> om een berichtje achter te laten.
         </p>
       )}
     </section>

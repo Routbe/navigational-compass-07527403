@@ -18,6 +18,7 @@ type Item = {
     image?: string | null;
     bio?: string;
     stats?: { label: string; value: number }[];
+    videos?: { title: string; url: string; date: string | null; thumb: string }[];
     posts?: { title: string; url: string; date: string | null }[];
     chess?: { blitz?: number | null; rapid?: number | null; online?: boolean | null; challengeUrl?: string };
   } | null;
@@ -114,8 +115,40 @@ function FeedCard({ item, theme }: { item: Item; theme: Theme }) {
   );
 }
 
+function VideoCard({ item, theme }: { item: Item; theme: Theme }) {
+  const videos = item.status?.videos ?? [];
+  return (
+    <div className="rounded-2xl p-3 text-left" style={{ background: theme.card, border: `1px solid ${theme.border}`, color: theme.text }}>
+      <a href={item.status?.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider hover:opacity-80" style={{ color: theme.muted }}>
+        <BrandIcon icon="siYoutube" className="h-3 w-3" /> Nieuwste video's · {item.status?.title}
+      </a>
+      <ul className="mt-2 space-y-2">
+        {videos.map((v) => {
+          const img = proxied(v.thumb);
+          return (
+            <li key={v.url}>
+              <a href={v.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 hover:opacity-80">
+                {img ? (
+                  <img src={img} alt="" loading="lazy" referrerPolicy="no-referrer" className="aspect-video w-24 shrink-0 rounded-lg object-cover" />
+                ) : (
+                  <span className="aspect-video w-24 shrink-0 rounded-lg" style={{ border: `1px solid ${theme.border}` }} />
+                )}
+                <span className="min-w-0">
+                  <span className="line-clamp-2 text-sm font-medium">{v.title}</span>
+                  {v.date && <span className="text-[11px]" style={{ color: theme.muted }}>{new Date(v.date).toLocaleDateString("nl-BE", { day: "numeric", month: "short", year: "numeric" })}</span>}
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
 function Card({ item, theme }: { item: Item; theme: Theme }) {
   if (item.status?.chess) return <ChessCard item={item} theme={theme} />;
+  if (item.status?.videos?.length) return <VideoCard item={item} theme={theme} />;
   if (item.status?.posts?.length) return <FeedCard item={item} theme={theme} />;
   const meta = integrationById(item.provider);
   const [showQr, setShowQr] = useState(false);
