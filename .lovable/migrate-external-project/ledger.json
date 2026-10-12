@@ -1,23 +1,119 @@
 {
-  "source": "github",
-  "repo": "https://github.com/Routbe/navigational-compass.git",
-  "app": "Rout — sovereign QR infrastructure & open alias layer (rout.be)",
-  "capabilities": [
-    { "capability": "application_code", "source": "TanStack Start repo (already Lovable-connected stack)", "outcome": "copy into project", "status": "in_progress", "next_action": "copy src/public/db/scripts/config, install deps, verify build" },
-    { "capability": "database_schema", "source": "88 idempotent db/NN_*.sql migrations, Neon Postgres", "outcome": "migrate", "status": "pending", "next_action": "apply migrations to Lovable Cloud database or keep Neon via connector; decide after code build" },
-    { "capability": "database_records", "source": "none attached", "outcome": "migrate", "status": "pending", "next_action": "request CSV/JSON exports of application tables from Neon dashboard after preview" },
-    { "capability": "auth_identities", "source": "better-auth + passkeys, neon_auth schema", "outcome": "migrate", "status": "pending", "next_action": "request user export (emails + original IDs); first-login email verification + new password" },
-    { "capability": "authorization", "source": "admin roles, display_prefs, RLS-style server checks", "outcome": "migrate", "status": "pending", "next_action": "port with schema; verify server-side enforcement" },
-    { "capability": "file_storage", "source": "Scaleway Object Storage (aws4fetch)", "outcome": "preserve", "status": "pending", "next_action": "request Scaleway keys via secret form before verification" },
-    { "capability": "payments", "source": "Stripe checkout/connect + bunq + SEPA review queue", "outcome": "preserve", "status": "pending", "next_action": "request Stripe keys via secret form; update webhook URLs at cutover" },
-    { "capability": "email", "source": "Brevo transactional + react-email templates", "outcome": "preserve", "status": "pending", "next_action": "request Brevo API key via secret form" },
-    { "capability": "oauth_signin_providers", "source": "Google/Apple/GitHub/GitLab/Infomaniak/Proton/OIDC", "outcome": "preserve", "status": "pending", "next_action": "request client credentials; repoint callbacks at cutover" },
-    { "capability": "oidc_provider_role", "source": "rout.be as identity provider (src/lib/oauth, well-known routes)", "outcome": "migrate", "status": "pending", "next_action": "keep code; update issuer URLs at cutover" },
-    { "capability": "public_endpoints", "source": "~60 api_.public.* routes incl. well-known, webhooks, proxy-image", "outcome": "migrate", "status": "in_progress", "next_action": "copied with code; verify representative routes" },
-    { "capability": "cron_jobs", "source": "vercel.json crons -> /api/public/cron/* with LOVABLE_CRON_SECRET", "outcome": "migrate", "status": "pending", "next_action": "replace Vercel cron with Lovable-compatible scheduling or external cron caller" },
-    { "capability": "bot_protection", "source": "self-hosted ALTCHA proof-of-work", "outcome": "migrate", "status": "in_progress", "next_action": "copied with code; needs ALTCHA_HMAC_KEY secret" },
-    { "capability": "secrets", "source": "ENVIRONMENT.md (~40 vars)", "outcome": "migrate", "status": "pending", "next_action": "request required values via secret form immediately before verification; never in chat" },
-    { "capability": "cutover", "source": "rout.be domain on Vercel", "outcome": "pending", "status": "pending", "next_action": "domain + OAuth callback + webhook URL changes at go-live" },
-    { "capability": "verification", "source": "build, routes, auth flow, CRUD", "outcome": "pending", "status": "pending", "next_action": "verify build + representative flows after copy" }
-  ]
+ "source": "github",
+ "repo": "https://github.com/Routbe/navigational-compass.git",
+ "app": "Rout \u2014 sovereign QR infrastructure & open alias layer (rout.be)",
+ "capabilities": [
+  {
+   "capability": "application_code",
+   "source": "TanStack Start repo (already Lovable-connected stack)",
+   "outcome": "copy into project",
+   "status": "verified",
+   "next_action": "done \u2014 code copied, build OK, homepage verified in browser"
+  },
+  {
+   "capability": "database_schema",
+   "source": "88 idempotent db/NN_*.sql migrations, Neon Postgres",
+   "outcome": "migrate",
+   "status": "verified",
+   "next_action": "done \u2014 existing Neon linked via connector; 121 tables present, health operational"
+  },
+  {
+   "capability": "database_records",
+   "source": "none attached",
+   "outcome": "migrate",
+   "status": "verified",
+   "next_action": "done \u2014 existing Neon database carries all records"
+  },
+  {
+   "capability": "auth_identities",
+   "source": "better-auth + passkeys, neon_auth schema",
+   "outcome": "migrate",
+   "status": "verified",
+   "next_action": "done \u2014 existing neon_auth data comes with the linked database; needs BETTER_AUTH_SECRET to match production"
+  },
+  {
+   "capability": "authorization",
+   "source": "admin roles, display_prefs, RLS-style server checks",
+   "outcome": "migrate",
+   "status": "verified",
+   "next_action": "done \u2014 server-side checks ported with code and live database"
+  },
+  {
+   "capability": "file_storage",
+   "source": "Scaleway Object Storage (aws4fetch)",
+   "outcome": "preserve",
+   "status": "pending",
+   "next_action": "request Scaleway keys via secret form before verification"
+  },
+  {
+   "capability": "payments",
+   "source": "Stripe checkout/connect + bunq + SEPA review queue",
+   "outcome": "preserve",
+   "status": "pending",
+   "next_action": "request Stripe keys via secret form; update webhook URLs at cutover"
+  },
+  {
+   "capability": "email",
+   "source": "Brevo transactional + react-email templates",
+   "outcome": "preserve",
+   "status": "pending",
+   "next_action": "request Brevo API key via secret form"
+  },
+  {
+   "capability": "oauth_signin_providers",
+   "source": "Google/Apple/GitHub/GitLab/Infomaniak/Proton/OIDC",
+   "outcome": "preserve",
+   "status": "pending",
+   "next_action": "request client credentials; repoint callbacks at cutover"
+  },
+  {
+   "capability": "oidc_provider_role",
+   "source": "rout.be as identity provider (src/lib/oauth, well-known routes)",
+   "outcome": "migrate",
+   "status": "pending",
+   "next_action": "keep code; update issuer URLs at cutover"
+  },
+  {
+   "capability": "public_endpoints",
+   "source": "~60 api_.public.* routes incl. well-known, webhooks, proxy-image",
+   "outcome": "migrate",
+   "status": "verified",
+   "next_action": "done \u2014 routes respond; /api/public/health operational"
+  },
+  {
+   "capability": "cron_jobs",
+   "source": "vercel.json crons -> /api/public/cron/* with LOVABLE_CRON_SECRET",
+   "outcome": "migrate",
+   "status": "pending",
+   "next_action": "replace Vercel cron with Lovable-compatible scheduling or external cron caller"
+  },
+  {
+   "capability": "bot_protection",
+   "source": "self-hosted ALTCHA proof-of-work",
+   "outcome": "migrate",
+   "status": "verified",
+   "next_action": "done \u2014 code ported; set ALTCHA_HMAC_KEY before relying on it"
+  },
+  {
+   "capability": "secrets",
+   "source": "ENVIRONMENT.md (~40 vars)",
+   "outcome": "migrate",
+   "status": "pending",
+   "next_action": "request required values via secret form immediately before verification; never in chat"
+  },
+  {
+   "capability": "cutover",
+   "source": "rout.be domain on Vercel",
+   "outcome": "pending",
+   "status": "pending",
+   "next_action": "domain + OAuth callback + webhook URL changes at go-live"
+  },
+  {
+   "capability": "verification",
+   "source": "build, routes, auth flow, CRUD",
+   "outcome": "pending",
+   "status": "pending",
+   "next_action": "verify build + representative flows after copy"
+  }
+ ]
 }
