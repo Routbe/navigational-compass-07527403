@@ -18,6 +18,8 @@ import { normalizeIntegrationValue, type Audience } from "@/lib/integrations-rul
 import { disconnectSpotifyPresence, setSpotifyPresenceScope, getMyPresence, setSpotifyPresenceVisible } from "@/lib/presence.functions";
 import { SnapchatPanel } from "@/components/studio/SnapchatPanel";
 import { getMyIntegrations, removeIntegration, saveIntegration } from "@/lib/integrations.functions";
+import { VerifyOwnership } from "@/components/studio/VerifyOwnership";
+import { isBioVerifiable } from "@/lib/open-web-rules";
 
 const SPOTIFY_MESSAGES: Record<string, [ok: boolean, text: string]> = {
   connected: [true, "Spotify gekoppeld"],
@@ -224,7 +226,7 @@ export function IntegrationsAccordion() {
                   <span className="min-w-0">
                     <span className="flex items-center gap-1 truncate text-sm font-medium">
                       <span className="truncate">{item.label}</span>
-                      {row?.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-primary" aria-label="Geverifieerd via inloggen" />}
+                      {row?.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-primary" aria-label="Eigenaarschap geverifieerd" />}
                     </span>
                     <span className="block truncate text-[11px] text-muted-foreground">{status}</span>
                   </span>
@@ -271,6 +273,9 @@ export function IntegrationsAccordion() {
                 ) : connected && row ? (
                   <div className="space-y-2">
                     <p className="truncate font-mono text-[11px] text-muted-foreground">Opgeslagen: {item.mode === "address" ? row.handle : `@${row.handle.replace(/^@/, "")}`}</p>
+                    {!row.verified && isBioVerifiable(item.id) && (
+                      <VerifyOwnership provider={item.id as "bluesky" | "wsocial" | "mastodon" | "github"} label={item.label} onVerified={() => void refresh()} />
+                    )}
                     <AudiencePicker
                       value={row.audience}
                       disabled={busy === item.id}

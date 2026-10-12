@@ -16,6 +16,9 @@ type Item = {
     subtitle?: string;
     url?: string;
     image?: string | null;
+    bio?: string;
+    stats?: { label: string; value: number }[];
+    posts?: { title: string; url: string; date: string | null }[];
     chess?: { blitz?: number | null; rapid?: number | null; online?: boolean | null; challengeUrl?: string };
   } | null;
 };
@@ -90,8 +93,30 @@ function ChessCard({ item, theme }: { item: Item; theme: Theme }) {
   );
 }
 
+function FeedCard({ item, theme }: { item: Item; theme: Theme }) {
+  const posts = item.status?.posts ?? [];
+  return (
+    <div className="rounded-2xl p-3 text-left" style={{ background: theme.card, border: `1px solid ${theme.border}`, color: theme.text }}>
+      <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider" style={{ color: theme.muted }}>
+        <BrandIcon icon="siRss" className="h-3 w-3" /> Laatste posts · {item.status?.title}
+      </span>
+      <ul className="mt-2 space-y-1.5">
+        {posts.map((p) => (
+          <li key={p.url}>
+            <a href={p.url} target="_blank" rel="noopener noreferrer" className="block hover:opacity-80">
+              <span className="block truncate text-sm font-medium">{p.title}</span>
+              {p.date && <span className="text-[11px]" style={{ color: theme.muted }}>{new Date(p.date).toLocaleDateString("nl-BE", { day: "numeric", month: "short", year: "numeric" })}</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function Card({ item, theme }: { item: Item; theme: Theme }) {
   if (item.status?.chess) return <ChessCard item={item} theme={theme} />;
+  if (item.status?.posts?.length) return <FeedCard item={item} theme={theme} />;
   const meta = integrationById(item.provider);
   const [showQr, setShowQr] = useState(false);
   const pay = paymentUri(item.provider, item.handle);
@@ -108,12 +133,20 @@ function Card({ item, theme }: { item: Item; theme: Theme }) {
       <span className="min-w-0 flex-1 text-left">
         <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider" style={{ color: theme.muted }}>
           {meta?.label ?? item.provider}
-          {item.verified && <BadgeCheck className="h-3 w-3" aria-label="Geverifieerd account" />}
+          {item.verified && <BadgeCheck className="h-3.5 w-3.5 text-primary" aria-label="Geverifieerd account" />}
         </span>
         <span className="block truncate text-sm font-medium">{pay ? "Steun mij" : item.status?.title ?? item.handle}</span>
         <span className="block truncate text-xs" style={{ color: theme.muted }}>
           {pay ? item.handle : item.status?.subtitle ?? ""}
         </span>
+        {!pay && item.status?.bio && <span className="mt-0.5 line-clamp-2 text-xs" style={{ color: theme.muted }}>{item.status.bio}</span>}
+        {!pay && item.status?.stats?.length ? (
+          <span className="mt-1 flex gap-1.5 text-[11px] tabular-nums" style={{ color: theme.muted }}>
+            {item.status.stats.map((st) => (
+              <span key={st.label} className="rounded px-1.5" style={{ border: `1px solid ${theme.border}` }}>{st.value.toLocaleString("nl-BE")} {st.label}</span>
+            ))}
+          </span>
+        ) : null}
       </span>
       {pay && <QrCode className="h-4 w-4 shrink-0" aria-hidden />}
     </div>
